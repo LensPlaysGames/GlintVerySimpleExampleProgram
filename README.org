@@ -1,0 +1,43 @@
+
+** Building
+
+- CMake
+- [[https://github.com/LensPlaysGames/GlintStandardLibrary][Glint Standard Library]]
+- [[https://github.com/LensPlaysGames/LensorCompilerCollection][LCC]]
+
+LCC is used to compile Glint source code, and for the cmake modules it provides to use the compiler from CMake.
+
+The Glint Standard Library provides very basic file operations for this example program.
+
+Here are the steps I see you going through to build this example program:
+
+- Get =LCC= binary
+
+  Probably just build it from source, it's pretty easy.
+
+- Build Glint Standard Library
+
+  Clone the repo, configure the CMake build (set =GLINTC= environment variable to FULL, ABSOLUTE path to =LCC= binary).
+
+  Build it.
+
+  Copy generated module metadatas (=*.gmeta=) and built library (=libgstd.a=, or similar) into this directory.
+
+- Build This Program!
+
+  Configure the CMake build, setting =GLINTC= like before so CMake knows how to build Glint source code, but also setting the =LCC_PATH= CMake option to the path where the LCC repo is on your system during configuration. I find it easiest to point this to the LCC submodule within the Glint Standard Library, since I need that anyways.
+
+#+begin_src sh
+  export GLINTC=/path/to/lcc
+  cmake -B bld -DLCC_PATH=/path/to/GlintStandardLibrary/lcc
+#+end_src
+
+If everything configures properly, you can now invoke the build.
+
+#+begin_src sh
+  cmake --build bld
+#+end_src
+
+If you get a complaint from LCC about not being able to find metadata for =SimpleFile= module, make sure you have =SimpleFile.gmeta= copied over from the Glint Standard Library build directory.
+
+Similarly, if you get a complaint from the linker about not being able to find =libgstd.a=, make sure that it is copied into the current directory from the Glint Standard Library build directory.
